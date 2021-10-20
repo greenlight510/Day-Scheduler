@@ -132,4 +132,17 @@ function placeTimeblockInList(newTimeblockObj, timeblockList) {
   return;
 }
 
+function saveTimeblockList(timeblockList) {
+  localStorage.setItem('timeblockObjects', JSON.stringify(timeblockList));
+}
 
+function setTimeblockText(timeblockList) {
+  if (timeblockList.length === 0 ) {
+    return;
+  } else {
+    for (let timeblock of timeblockList) {
+      document.querySelector(`#timeblock-${timeblock.hour} textarea`)
+        .value = timeblock.todo;
+    }
+  }
+}
