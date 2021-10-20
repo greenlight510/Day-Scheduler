@@ -29,11 +29,11 @@ function displayCurrentDate(cTime) {
     .tContent = cTime.format('dddd, MMMM Do');
 }
 
-/*** functions for displaying all timeblock rows ***/
+/*** Functions to display timeblock rows ***/
 function displayTimeblockRows(cTime) {
   const cHour = cTime.hour();
 
-  //working hours are 9-5 or 9-17
+  //Working hours 9am to 6pm
   for (let i = 9; i <= 18; i ++) {
     const timeblock = createTimeblockRow(i);
     const hourCol = createCol(createHourDiv(i), 1);
@@ -76,9 +76,60 @@ function createTextArea(hour, cHour) {
   return tArea;
 }
 
-function getTextAreaBackgroundClass(hour, currentHour) {
-  return hour < currentHour ? 'past' 
-    : hour === currentHour ? 'present' 
+function getTextAreaBackgroundClass(hour, cHour) {
+  return hour < cHour ? 'past' 
+    : hour === cHour ? 'present' 
     : 'future';
 }
+
+function createSaveBtn(hour) {
+  const saveBtn = document.createElement('button');
+  saveBtn.classList.add('saveBtn');
+  saveBtn.innerHTML = '<i class="fas fa-save"></i>';
+  saveBtn.setAttribute('data-hour', hour);
+  return saveBtn;
+}
+
+function appendTimeblockColumns(timeblockRow, hourCol, textAreaCol, saveBtnCol) {
+  const innerCols = [hourCol, textAreaCol, saveBtnCol];
+  for (let col of innerCols) {
+    timeblockRow.appendChild(col);
+  }
+}
+
+/***Functions for local storage ***/
+function containerClicked(event, timeblockList) {
+  if (isSaveButton(event)) {
+    const timeblockHour = getTimeblockHour(event);
+    const textAreaValue = getTextAreaValue(timeblockHour);
+    placeTimeblockInList(new TimeblockObj(timeblockHour, textAreaValue), timeblockList);
+    saveTimeblockList(timeblockList);
+  }
+}
+
+function isSaveButton(event) {
+  return event.target.matches('button') || event.target.matches('.fa-save');
+}
+
+function getTimeblockHour(event) {
+  return event.target.matches('.fa-save') ? event.target.parentElement.dataset.hour : event.target.dataset.hour;
+}
+
+function getTextAreaValue(timeblockHour) {
+  return document.querySelector(`#timeblock-${timeblockHour} textarea`).value;
+}
+
+function placeTimeblockInList(newTimeblockObj, timeblockList) {
+  if (timeblockList.length > 0) {
+    for (let savedTimeblock of timeblockList) {
+      if (savedTimeblock.hour === newTimeblockObj.hour) {
+        savedTimeblock.todo = newTimeblockObj.todo;
+        return;
+      }
+    }
+  } 
+  timeblockList.push(newTimeblockObj);
+  return;
+}
+
 
