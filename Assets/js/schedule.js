@@ -32,7 +32,7 @@ function displayCurrentDate(cTime) {
 /*** functions for displaying all timeblock rows ***/
 function displayTimeblockRows(cTime) {
   const cHour = cTime.hour();
-  
+
   //working hours are 9-5 or 9-17
   for (let i = 9; i <= 18; i ++) {
     const timeblock = createTimeblockRow(i);
@@ -56,5 +56,29 @@ function createCol(element, colSize) {
   col.classList.add(`col-${colSize}`,'p-0');
   col.appendChild(element);
   return col;
+}
+
+function createHourDiv(hour) {
+  const hourCol = document.createElement('div');
+  hourCol.classList.add('hour');
+  hourCol.textContent = fHour(hour);
+  return hourCol;
+}
+
+function fHour(hour) {
+  const hString = String(hour);
+  return moment(hString, 'h').format('hA');
+}
+
+function createTextArea(hour, cHour) {
+  const tArea = document.createElement('textarea');
+  tArea.classList.add(getTextAreaBackgroundClass(hour, cHour));
+  return tArea;
+}
+
+function getTextAreaBackgroundClass(hour, currentHour) {
+  return hour < currentHour ? 'past' 
+    : hour === currentHour ? 'present' 
+    : 'future';
 }
 
