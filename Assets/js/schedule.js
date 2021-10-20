@@ -6,16 +6,55 @@ class TimeblockObj {
 }
 
 window.onload = function() {
-  const currentTimeblocks = getCurrentTimeblocks();
-  const currentTime = moment();
+  const cTimeblocks = getCurrentTimeblocks();
+  const cTime = moment();
 
-  displayCurrentDate(currentTime);
-  displayTimeblockRows(currentTime);
+  displayCurrentDate(cTime);
+  displayTimeblockRows(cTime);
 
   document.querySelector('.container')
     .addEventListener('click', function(event) {
-      containerClicked(event, currentTimeblocks);
+      containerClicked(event, cTimeblocks);
     });
-  setTimeblockText(currentTimeblocks);
+  setTimeblockText(cTimeblocks);
 };
+
+function getCurrentTimeblocks() {
+  const cTimeblocks = localStorage.getItem('timeblockObjects');
+  return cTimeblocks ? JSON.parse(cTimeblocks) : [];
+}
+
+function displayCurrentDate(cTime) {
+  document.getElementById('currentDay')
+    .tContent = cTime.format('dddd, MMMM Do');
+}
+
+/*** functions for displaying all timeblock rows ***/
+function displayTimeblockRows(cTime) {
+  const cHour = cTime.hour();
+  
+  //working hours are 9-5 or 9-17
+  for (let i = 9; i <= 18; i ++) {
+    const timeblock = createTimeblockRow(i);
+    const hourCol = createCol(createHourDiv(i), 1);
+    const tArea = createCol(createTextArea(i, cHour), 10);
+    const saveBtn = createCol(createSaveBtn(i), 1);
+    appendTimeblockColumns(timeblock, hourCol, tArea, saveBtn);
+    document.querySelector('.container').appendChild(timeblock);
+  }
+}
+
+function createTimeblockRow(hourId) {
+  const timeblock = document.createElement('div');
+  timeblock.classList.add('row');
+  timeblock.id = `timeblock-${hourId}`;
+  return timeblock;
+}
+
+function createCol(element, colSize) {
+  const col = document.createElement('div');
+  col.classList.add(`col-${colSize}`,'p-0');
+  col.appendChild(element);
+  return col;
+}
 
