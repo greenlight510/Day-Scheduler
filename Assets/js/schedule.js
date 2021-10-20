@@ -6,40 +6,40 @@ class TimeblockObj {
 }
 
 window.onload = function() {
-  const cTimeblocks = getCurrentTimeblocks();
-  const cTime = moment();
+  const currentTimeblocks = getCurrentTimeblocks();
+  const currentTime = moment();
 
-  displayCurrentDate(cTime);
-  displayTimeblockRows(cTime);
+  displayCurrentDate(currentTime);
+  displayTimeblockRows(currentTime);
 
   document.querySelector('.container')
     .addEventListener('click', function(event) {
-      containerClicked(event, cTimeblocks);
+      containerClicked(event, currentTimeblocks);
     });
-  setTimeblockText(cTimeblocks);
+  setTimeblockText(currentTimeblocks);
 };
 
 function getCurrentTimeblocks() {
-  const cTimeblocks = localStorage.getItem('timeblockObjects');
-  return cTimeblocks ? JSON.parse(cTimeblocks) : [];
+  const currentTimeblocks = localStorage.getItem('timeblockObjects');
+  return currentTimeblocks ? JSON.parse(currentTimeblocks) : [];
 }
 
-function displayCurrentDate(cTime) {
+function displayCurrentDate(currentTime) {
   document.getElementById('currentDay')
-    .tContent = cTime.format('dddd, MMMM Do');
+    .textContent = currentTime.format('dddd, MMMM Do');
 }
 
-/*** Functions to display timeblock rows ***/
-function displayTimeblockRows(cTime) {
-  const cHour = cTime.hour();
+/*** Function for displaying time block ***/
+function displayTimeblockRows(currentTime) {
+  const currentHour = currentTime.hour();
 
-  //Working hours 9am to 6pm
+  //Working hours 9AM to 6PM
   for (let i = 9; i <= 18; i ++) {
     const timeblock = createTimeblockRow(i);
     const hourCol = createCol(createHourDiv(i), 1);
-    const tArea = createCol(createTextArea(i, cHour), 10);
+    const textArea = createCol(createTextArea(i, currentHour), 10);
     const saveBtn = createCol(createSaveBtn(i), 1);
-    appendTimeblockColumns(timeblock, hourCol, tArea, saveBtn);
+    appendTimeblockColumns(timeblock, hourCol, textArea, saveBtn);
     document.querySelector('.container').appendChild(timeblock);
   }
 }
@@ -61,24 +61,24 @@ function createCol(element, colSize) {
 function createHourDiv(hour) {
   const hourCol = document.createElement('div');
   hourCol.classList.add('hour');
-  hourCol.textContent = fHour(hour);
+  hourCol.textContent = formatHour(hour);
   return hourCol;
 }
 
-function fHour(hour) {
-  const hString = String(hour);
-  return moment(hString, 'h').format('hA');
+function formatHour(hour) {
+  const hourString = String(hour);
+  return moment(hourString, 'h').format('hA');
 }
 
-function createTextArea(hour, cHour) {
-  const tArea = document.createElement('textarea');
-  tArea.classList.add(getTextAreaBackgroundClass(hour, cHour));
-  return tArea;
+function createTextArea(hour, currentHour) {
+  const textArea = document.createElement('textarea');
+  textArea.classList.add(getTextAreaBackgroundClass(hour, currentHour));
+  return textArea;
 }
 
-function getTextAreaBackgroundClass(hour, cHour) {
-  return hour < cHour ? 'past' 
-    : hour === cHour ? 'present' 
+function getTextAreaBackgroundClass(hour, currentHour) {
+  return hour < currentHour ? 'past' 
+    : hour === currentHour ? 'present' 
     : 'future';
 }
 
@@ -97,7 +97,7 @@ function appendTimeblockColumns(timeblockRow, hourCol, textAreaCol, saveBtnCol) 
   }
 }
 
-/***Functions for local storage ***/
+/***Functions to save to local storage ***/
 function containerClicked(event, timeblockList) {
   if (isSaveButton(event)) {
     const timeblockHour = getTimeblockHour(event);
